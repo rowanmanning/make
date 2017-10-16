@@ -1,0 +1,19 @@
+{
+  "name": "@rowanmanning/make",
+  "version": "0.0.0",
+  "description": "Reusable Makefiles for my projects",
+  "keywords": [
+    "make"
+  ],
+  "author": "Rowan Manning (http://rowanmanning.com/)",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/rowanmanning/make.js.git"
+  },
+  "homepage": "https://github.com/rowanmanning/make.js",
+  "bugs": "https://github.com/rowanmanning/make.js/issues",
+  "license": "MIT",
+  "engines": {
+    "node": ">=4"
+  }
+}
