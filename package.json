@@ -1,6 +1,6 @@
 {
   "name": "@rowanmanning/make",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "description": "Reusable Makefiles for my projects",
   "keywords": [
     "make"
