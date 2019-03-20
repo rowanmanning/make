@@ -80,7 +80,6 @@ verify-jshint:
 verify-jscs:
 	@if [ -e .jscsrc* ]; then jscs . && $(TASK_DONE); fi
 
-
 # Verify that code coverage meets the expected
 # percentage. This works with either nyc or istanbul
 verify-coverage:
@@ -106,25 +105,48 @@ export INTEGRATION_SLOW := 4000
 test: test-unit-coverage verify-coverage test-integration
 	@$(TASK_DONE)
 
-# Run the unit tests using mocha
+# Run the unit tests using mocha or jest
 test-unit:
-	@if [ -d test/unit ]; then mocha "test/unit/**/*.test.js" --recursive && $(TASK_DONE); fi
+	@if [ -d test/unit ]; then make _test-unit-run && $(TASK_DONE); fi
+_test-unit-run:
+	@if [ -x $(NPM_BIN)/mocha ]; then make _test-unit-run-mocha; fi
+	@if [ -x $(NPM_BIN)/jest ]; then make _test-unit-run-jest; fi
+_test-unit-run-mocha:
+	@mocha "test/unit/**/*.test.js" --recursive
+_test-unit-run-jest:
+	@jest "test/unit/.*\\.test\\.(js|jsx)$$"
 
-# Run the unit tests using mocha and generating
-# a coverage report if nyc or istanbul are installed
+# Run the unit tests using mocha or jest, and
+# generating a coverage report
 test-unit-coverage:
-	@if [ -d test/unit ]; then \
-		if [ -x $(NPM_BIN)/nyc ]; then \
-			nyc --reporter=text --reporter=html $(NPM_BIN)/_mocha "test/unit/**/*.test.js" --recursive && $(TASK_DONE); \
+	@if [ -d test/unit ]; then make _test-unit-coverage-run && $(TASK_DONE); fi
+_test-unit-coverage-run:
+	@if [ -x $(NPM_BIN)/nyc ] || [ -x $(NPM_BIN)/istanbul ]; then \
+		make _test-unit-coverage-run-mocha; \
+	else \
+		if [ -x $(NPM_BIN)/jest ]; then \
+			make _test-unit-coverage-run-jest; \
 		else \
-			if [ -x $(NPM_BIN)/istanbul ]; then \
-				istanbul cover $(NPM_BIN)/_mocha -- "test/unit/**/*.test.js" --recursive && $(TASK_DONE); \
-			else \
-				make test-unit; \
-			fi \
+			make test-unit; \
 		fi \
 	fi
+_test-unit-coverage-run-mocha:
+	@if [ -x $(NPM_BIN)/nyc ]; then make _test-unit-coverage-run-mocha-nyc; fi
+	@if [ -x $(NPM_BIN)/istanbul ]; then make _test-unit-coverage-run-mocha-istanbul; fi
+_test-unit-coverage-run-mocha-nyc:
+	@nyc --reporter=text --reporter=html $(NPM_BIN)/_mocha "test/unit/**/*.test.js" --recursive
+_test-unit-coverage-run-mocha-istanbul:
+	@istanbul cover $(NPM_BIN)/_mocha -- "test/unit/**/*.test.js" --recursive
+_test-unit-coverage-run-jest:
+	@jest "test/unit/.*\\.test\\.(js|jsx)$$" --coverage --coverageThreshold '{"global":{"branches":$(EXPECTED_COVERAGE),"functions":$(EXPECTED_COVERAGE),"lines":$(EXPECTED_COVERAGE),"statements":$(EXPECTED_COVERAGE)}}'
 
 # Run the integration tests using mocha
 test-integration:
-	@if [ -d test/integration ]; then mocha "test/integration/**/*.test.js" --recursive --timeout $(INTEGRATION_TIMEOUT) --slow $(INTEGRATION_SLOW) && $(TASK_DONE); fi
+	@if [ -d test/integration ]; then make _test-integration-run && $(TASK_DONE); fi
+_test-integration-run:
+	@if [ -x $(NPM_BIN)/mocha ]; then make _test-integration-run-mocha; fi
+	@if [ -x $(NPM_BIN)/jest ]; then make _test-integration-run-jest; fi
+_test-integration-run-mocha:
+	@mocha "test/integration/**/*.test.js" --recursive --timeout $(INTEGRATION_TIMEOUT) --slow $(INTEGRATION_SLOW)
+_test-integration-run-jest:
+	@jest "test/integration/.*\\.test\\.(js|jsx)$$"
