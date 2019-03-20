@@ -150,3 +150,32 @@ _test-integration-run-mocha:
 	@mocha "test/integration/**/*.test.js" --recursive --timeout $(INTEGRATION_TIMEOUT) --slow $(INTEGRATION_SLOW)
 _test-integration-run-jest:
 	@jest "test/integration/.*\\.test\\.(js|jsx)$$"
+
+
+# Publish tasks (CI only)
+# -----------------------
+
+# Get the NPM publish tag
+ifeq ($(NPM_PUBLISH_TAG),)
+NPM_PUBLISH_TAG = $(CIRCLE_TAG)
+endif
+ifeq ($(NPM_PUBLISH_TAG),)
+NPM_PUBLISH_TAG = $(TRAVIS_TAG)
+endif
+
+# Publish the project to npm
+publish-npm: npm-set-auth-token npm-set-package-version
+ifneq ($(NPM_PUBLISH_TAG),)
+	@npm publish --access public
+	@$(TASK_DONE)
+endif
+
+npm-set-package-version:
+	@npm version --no-git-tag-version $(NPM_PUBLISH_TAG)
+	@$(TASK_DONE)
+
+npm-set-auth-token:
+	@if [ ! -f $(HOME)/.npmrc ]; then \
+		echo "//registry.npmjs.org/:_authToken=$(NPM_AUTH_TOKEN)" > $(HOME)/.npmrc; \
+	fi
+	@$(TASK_DONE)

@@ -64,6 +64,8 @@ Now you can use the following commands, based on which language you choose.
 
   * `test-integration`: If a `test/integration` folder is present in the project root, run [Mocha] or [Jest] recursively on any files that end in `.test.js`.
 
+  * `publish-npm`: If an `NPM_PUBLISH_TAG` (or `CIRCLE_TAG`/`TRAVIS_TAG`), and an `NPM_AUTH_TOKEN` environment variable is present, publish the module to npm.
+
 #### Helpers
 
   * The `TASK_DONE` output helper allows you to quickly output a check-marked notice after a task has completed successfully. Just add it to your own tasks like this:
