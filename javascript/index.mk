@@ -97,7 +97,11 @@ export INTEGRATION_TIMEOUT := 5000
 export INTEGRATION_SLOW := 4000
 
 # Mocha command
-UNIT_TEST_FLAGS = "test/unit/**/*.test.js" --recursive $(UNIT_TEST_EXTRA_FLAGS)
+ifneq (,$(shell cat package.json | grep '\"esm\"\:'))
+UNIT_TEST_FLAGS = "test/unit/**/*.test.js" --recursive --require esm
+else
+UNIT_TEST_FLAGS = "test/unit/**/*.test.js" --recursive
+endif
 
 # Run all of the test tasks and verify coverage
 test: test-unit-coverage verify-coverage test-integration
