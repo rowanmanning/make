@@ -54,13 +54,13 @@ Now you can use the following commands, based on which language you choose.
 
   * `verify-jshint`: If a `.jshintrc` file is present in the project root, run [JSHint] against the code.
 
-  * `verify-coverage`: If a `coverage/lcov-report` folder is present in the project root and the [`nyc`][nyc] or [`istanbul`][istanbul] module is installed, check that coverage is above `90%`. This is configurable by specifying `export EXPECTED_COVERAGE := <value>` in your dependant Makefile.
+  * `verify-coverage`: If a `coverage/lcov-report` folder is present in the project root and the [`nyc`][nyc] module is installed, check that coverage is above `90%`. This is configurable by specifying `export EXPECTED_COVERAGE := <value>` in your dependant Makefile.
 
   * `test`: Run the `test-unit-coverage`, `verify-coverage`, and `test-integration` tasks.
 
   * `test-unit`: If a `test/unit` folder is present in the project root, run [Mocha] recursively on any files that end in `.test.js`.
 
-  * `test-unit-coverage`: If a `test/unit` folder is present in the project root and the [`nyc`][nyc] or [`istanbul`][istanbul] module is installed, run [Mocha] recursively on any files that end in `.test.js` with coverage reporting. If `instanbul` or `nyc` are _not_ present, fall back to running `make test-unit`
+  * `test-unit-coverage`: If a `test/unit` folder is present in the project root and the [`nyc`][nyc] module is installed, run [Mocha] recursively on any files that end in `.test.js` with coverage reporting. If `nyc` is _not_ present, fall back to running `make test-unit`
 
   * `test-integration`: If a `test/integration` folder is present in the project root, run [Mocha] recursively on any files that end in `.test.js`.
 
@@ -90,7 +90,6 @@ Copyright &copy; 2017, Rowan Manning
 
 [dustmite]: https://github.com/springernature/dustmite
 [eslint]: http://eslint.org/
-[istanbul]: https://github.com/gotwarlost/istanbul
 [jscs]: http://jscs.info/
 [jshint]: http://jshint.com/
 [mit]: LICENSE

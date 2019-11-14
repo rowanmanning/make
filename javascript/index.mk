@@ -80,16 +80,11 @@ verify-jshint:
 verify-jscs:
 	@if [ -e .jscsrc* ]; then jscs . && $(TASK_DONE); fi
 
-# Verify that code coverage meets the expected
-# percentage. This works with either nyc or istanbul
+# Verify that code coverage meets the expected percentage with nyc
 verify-coverage:
 	@if [ -d coverage ]; then \
 		if [ -x $(NPM_BIN)/nyc ]; then \
 			nyc check-coverage --lines $(EXPECTED_COVERAGE) --functions $(EXPECTED_COVERAGE) --branches $(EXPECTED_COVERAGE) && $(TASK_DONE); \
-		else \
-			if [ -x $(NPM_BIN)/istanbul ]; then \
-				istanbul check-coverage --statement $(EXPECTED_COVERAGE) --branch $(EXPECTED_COVERAGE) --function $(EXPECTED_COVERAGE) && $(TASK_DONE); \
-			fi \
 		fi \
 	fi
 
@@ -121,18 +116,13 @@ _test-unit-run-mocha:
 test-unit-coverage:
 	@if [ -d test/unit ]; then make _test-unit-coverage-run && $(TASK_DONE); fi
 _test-unit-coverage-run:
-	@if [ -x $(NPM_BIN)/nyc ] || [ -x $(NPM_BIN)/istanbul ]; then \
-		make _test-unit-coverage-run-mocha; \
+	@if [ -x $(NPM_BIN)/mocha ] && [ -x $(NPM_BIN)/nyc ]; then \
+		make _test-unit-coverage-run-mocha-nyc; \
 	else \
 		make test-unit; \
 	fi
-_test-unit-coverage-run-mocha:
-	@if [ -x $(NPM_BIN)/nyc ]; then make _test-unit-coverage-run-mocha-nyc; fi
-	@if [ -x $(NPM_BIN)/istanbul ]; then make _test-unit-coverage-run-mocha-istanbul; fi
 _test-unit-coverage-run-mocha-nyc:
 	@nyc --reporter=text --reporter=html $(NPM_BIN)/_mocha $(UNIT_TEST_FLAGS)
-_test-unit-coverage-run-mocha-istanbul:
-	@istanbul cover $(NPM_BIN)/_mocha -- $(UNIT_TEST_FLAGS)
 
 # Run the integration tests using mocha
 test-integration:
