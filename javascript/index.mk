@@ -108,18 +108,15 @@ UNIT_TEST_FLAGS = "test/unit/**/*.test.js" --recursive $(UNIT_TEST_EXTRA_FLAGS)
 test: test-unit-coverage verify-coverage test-integration
 	@$(TASK_DONE)
 
-# Run the unit tests using mocha or jest
+# Run the unit tests using mocha
 test-unit:
 	@if [ -d test/unit ]; then make _test-unit-run && $(TASK_DONE); fi
 _test-unit-run:
 	@if [ -x $(NPM_BIN)/mocha ]; then make _test-unit-run-mocha; fi
-	@if [ -x $(NPM_BIN)/jest ]; then make _test-unit-run-jest; fi
 _test-unit-run-mocha:
 	@mocha $(UNIT_TEST_FLAGS)
-_test-unit-run-jest:
-	@jest "test/unit/.*\\.test\\.(js|jsx)$$"
 
-# Run the unit tests using mocha or jest, and
+# Run the unit tests using mocha, and
 # generating a coverage report
 test-unit-coverage:
 	@if [ -d test/unit ]; then make _test-unit-coverage-run && $(TASK_DONE); fi
@@ -127,11 +124,7 @@ _test-unit-coverage-run:
 	@if [ -x $(NPM_BIN)/nyc ] || [ -x $(NPM_BIN)/istanbul ]; then \
 		make _test-unit-coverage-run-mocha; \
 	else \
-		if [ -x $(NPM_BIN)/jest ]; then \
-			make _test-unit-coverage-run-jest; \
-		else \
-			make test-unit; \
-		fi \
+		make test-unit; \
 	fi
 _test-unit-coverage-run-mocha:
 	@if [ -x $(NPM_BIN)/nyc ]; then make _test-unit-coverage-run-mocha-nyc; fi
@@ -140,19 +133,14 @@ _test-unit-coverage-run-mocha-nyc:
 	@nyc --reporter=text --reporter=html $(NPM_BIN)/_mocha $(UNIT_TEST_FLAGS)
 _test-unit-coverage-run-mocha-istanbul:
 	@istanbul cover $(NPM_BIN)/_mocha -- $(UNIT_TEST_FLAGS)
-_test-unit-coverage-run-jest:
-	@jest "test/unit/.*\\.test\\.(js|jsx)$$" --coverage --coverageThreshold '{"global":{"branches":$(EXPECTED_COVERAGE),"functions":$(EXPECTED_COVERAGE),"lines":$(EXPECTED_COVERAGE),"statements":$(EXPECTED_COVERAGE)}}'
 
 # Run the integration tests using mocha
 test-integration:
 	@if [ -d test/integration ]; then make _test-integration-run && $(TASK_DONE); fi
 _test-integration-run:
 	@if [ -x $(NPM_BIN)/mocha ]; then make _test-integration-run-mocha; fi
-	@if [ -x $(NPM_BIN)/jest ]; then make _test-integration-run-jest; fi
 _test-integration-run-mocha:
 	@mocha "test/integration/**/*.test.js" --recursive --timeout $(INTEGRATION_TIMEOUT) --slow $(INTEGRATION_SLOW) $(INTEGRATION_TEST_MOCHA_FLAGS)
-_test-integration-run-jest:
-	@jest "test/integration/.*\\.test\\.(js|jsx)$$"
 
 
 # Publish tasks (CI only)
