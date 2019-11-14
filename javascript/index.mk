@@ -101,6 +101,9 @@ verify-coverage:
 export INTEGRATION_TIMEOUT := 5000
 export INTEGRATION_SLOW := 4000
 
+# Mocha command
+UNIT_TEST_FLAGS = "test/unit/**/*.test.js" --recursive $(UNIT_TEST_EXTRA_FLAGS)
+
 # Run all of the test tasks and verify coverage
 test: test-unit-coverage verify-coverage test-integration
 	@$(TASK_DONE)
@@ -112,7 +115,7 @@ _test-unit-run:
 	@if [ -x $(NPM_BIN)/mocha ]; then make _test-unit-run-mocha; fi
 	@if [ -x $(NPM_BIN)/jest ]; then make _test-unit-run-jest; fi
 _test-unit-run-mocha:
-	@mocha "test/unit/**/*.test.js" --recursive
+	@mocha $(UNIT_TEST_FLAGS)
 _test-unit-run-jest:
 	@jest "test/unit/.*\\.test\\.(js|jsx)$$"
 
@@ -134,9 +137,9 @@ _test-unit-coverage-run-mocha:
 	@if [ -x $(NPM_BIN)/nyc ]; then make _test-unit-coverage-run-mocha-nyc; fi
 	@if [ -x $(NPM_BIN)/istanbul ]; then make _test-unit-coverage-run-mocha-istanbul; fi
 _test-unit-coverage-run-mocha-nyc:
-	@nyc --reporter=text --reporter=html $(NPM_BIN)/_mocha "test/unit/**/*.test.js" --recursive
+	@nyc --reporter=text --reporter=html $(NPM_BIN)/_mocha $(UNIT_TEST_FLAGS)
 _test-unit-coverage-run-mocha-istanbul:
-	@istanbul cover $(NPM_BIN)/_mocha -- "test/unit/**/*.test.js" --recursive
+	@istanbul cover $(NPM_BIN)/_mocha -- $(UNIT_TEST_FLAGS)
 _test-unit-coverage-run-jest:
 	@jest "test/unit/.*\\.test\\.(js|jsx)$$" --coverage --coverageThreshold '{"global":{"branches":$(EXPECTED_COVERAGE),"functions":$(EXPECTED_COVERAGE),"lines":$(EXPECTED_COVERAGE),"statements":$(EXPECTED_COVERAGE)}}'
 
@@ -147,7 +150,7 @@ _test-integration-run:
 	@if [ -x $(NPM_BIN)/mocha ]; then make _test-integration-run-mocha; fi
 	@if [ -x $(NPM_BIN)/jest ]; then make _test-integration-run-jest; fi
 _test-integration-run-mocha:
-	@mocha "test/integration/**/*.test.js" --recursive --timeout $(INTEGRATION_TIMEOUT) --slow $(INTEGRATION_SLOW)
+	@mocha "test/integration/**/*.test.js" --recursive --timeout $(INTEGRATION_TIMEOUT) --slow $(INTEGRATION_SLOW) $(INTEGRATION_TEST_MOCHA_FLAGS)
 _test-integration-run-jest:
 	@jest "test/integration/.*\\.test\\.(js|jsx)$$"
 

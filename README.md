@@ -78,6 +78,8 @@ Now you can use the following commands, based on which language you choose.
 
   * The folder `./node_modules/.bin` is added to the `PATH` environment variable so that you don't need to explicitly reference it in calls to further commands.
 
+  * The `UNIT_TEST_EXTRA_FLAGS` environment variable can be set to add additional flags to Mocha commands.
+
 
 ## License
 
