@@ -1,0 +1,26 @@
+version: 2.1
+
+# Actual CI jobs
+jobs:
+
+  # Publish to npm
+  publish:
+    docker:
+      - image: node:12
+    steps:
+      - checkout
+      - run:
+          name: Publish to npm
+          command: make -f javascript/index.mk publish-npm
+
+# Workflows
+workflows:
+  version: 2
+  publish:
+    jobs:
+      - publish:
+          filters:
+            branches:
+              ignore: /.*/
+            tags:
+              only: /^v?[0-9]+\.[0-9]+\.[0-9]+([-+].+)?/
