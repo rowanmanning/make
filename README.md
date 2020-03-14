@@ -42,6 +42,8 @@ Now you can use the following commands, based on which language you choose.
 
   * `install`: Runs `npm install` but only if `package.json` has changed more recently than the `node_modules` folder. This speeds up installing to be instant if nothing needs doing. This task also prunes extra dependencies.
 
+  * `env`: Copies a `sample.env` file to `.env` if the sample file exists.
+
   * `verify`: Run the `verify-javascript` and `verify-dust` tasks.
 
   * `verify-javascript`: Run the `verify-eslint`, `verify-jshint`, and `verify-jscs` tasks.

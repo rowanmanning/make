@@ -137,6 +137,20 @@ _test-integration-run-mocha:
 	@mocha "test/integration/**/*.test.js" --recursive --timeout $(INTEGRATION_TIMEOUT) --slow $(INTEGRATION_SLOW) $(INTEGRATION_TEST_MOCHA_FLAGS)
 
 
+# Configuration tasks
+# -------------------
+
+env:
+	@if [ -f sample.env ]; then \
+		if [ ! -f .env ]; then \
+			cp sample.env .env; \
+			echo "✓ env file created"; \
+		else \
+			echo "✓ env file already exists"; \
+		fi \
+	fi
+
+
 # Publish tasks (CI only)
 # -----------------------
 
