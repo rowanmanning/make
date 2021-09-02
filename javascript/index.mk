@@ -113,7 +113,7 @@ test-unit:
 _test-unit-run:
 	@if [ -x $(NPM_BIN)/mocha ]; then make _test-unit-run-mocha; fi
 _test-unit-run-mocha:
-	@mocha $(UNIT_TEST_FLAGS)
+	@mocha $(UNIT_TEST_FLAGS) $(UNIT_TEST_MOCHA_FLAGS)
 
 # Run the unit tests using mocha, and
 # generating a coverage report
@@ -126,7 +126,7 @@ _test-unit-coverage-run:
 		make test-unit; \
 	fi
 _test-unit-coverage-run-mocha-nyc:
-	@nyc --reporter=text --reporter=html $(NPM_BIN)/_mocha $(UNIT_TEST_FLAGS)
+	@nyc --reporter=text --reporter=html $(NPM_BIN)/_mocha $(UNIT_TEST_FLAGS) $(UNIT_TEST_MOCHA_FLAGS)
 
 # Run the integration tests using mocha
 test-integration:
